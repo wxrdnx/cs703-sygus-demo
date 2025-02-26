@@ -1,0 +1,16 @@
+(set-logic LIA)
+(synth-fun max ((x Int) (y Int)) Int
+  ((I Int) (B Bool))
+  ((I Int (0 1 x y
+            (+ I I)
+            (- I I)
+            (ite B I I)))
+   (B Bool ((and B B)
+            (not B)
+            (<= I I)))))
+(declare-var x Int)
+(declare-var y Int)
+(constraint (>= (max x y) x))
+(constraint (>= (max x y) y))
+
+(check-synth)
