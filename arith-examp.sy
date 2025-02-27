@@ -1,0 +1,19 @@
+(set-logic LIA) ; Input logic - Linear Integer Arithmetic in this case
+
+(synth-fun arith-examp ((x Int)(y Int)) Int ; declare function arith-examp
+    ((I Int))
+    ((I Int (0 1 x y (+ I I) (- I I)))) ; Grammar
+)
+
+(declare-var x Int)
+(declare-var y Int)
+
+(constraint (= (arith-examp x y) (+ (+ (* 2 x) (* 2 y)) 2))) ; constrain it to the form f(x, y) = 2*x + 2*y + 2
+; TODO figure out how to do this with arbitrary constants a, b, c
+
+(check-synth)  ; Check if the synthesis problem has a solution
+
+; TODO notes (delete this when done)
+; f(x, y) = x + y + 2 – use this to generate i/o examples
+; In the end, use those examples to synthesize this function.
+; Figure out: How do you feed examples to solver?
