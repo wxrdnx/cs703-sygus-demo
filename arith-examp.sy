@@ -1,48 +1,37 @@
 (set-logic LIA) ; Input logic - Linear Integer Arithmetic in this case
-; TODO figure out how to get this working with PBE_ (programming-by-examples)
 
-(synth-fun f1 ((x Int) (y Int)) Int ; declare function f1, signature is f2(x, y)
+(synth-fun f_with_constraint ((x Int) (y Int)) Int ; declare function f_with_constraint, signature is f(x, y)
     ((I Int)) ; Declare nonterminal
     ((I Int (0 1 x y (+ I I) (- I I)))) ; Grammar for nonterminal - equivalent to I ::= 0 | 1 | x | y | I + I | I - I
 )
 
-; TODO remove other demo functions that don't work for some ineffable reason
-;(synth-fun f2 ((x Int) (y Int)) Int) ; function f2 with same grammar and signature as f1
-;    ((I Int))
-;    ((I Int (0 1 x y (+ I I) (- I I))))
-;)
-
-;(synth-fun f3 ((x Int) (y Int)) Int ; f3, same as f2 and f1
-;    ((I Int))
-;    ((I Int (0 1 x y (+ I I) (- I I))))
-;)
+(synth-fun f_with_example ((x Int) (y Int)) Int ; declare function f_with_example, signature is f(x, y)
+    ((I Int))
+    ((I Int (0 1 x y (+ I I) (- I I)))) ; Same nonterminal and grammar as f_with_constraint
+)
 
 
-; Examples/constraints
-; f1 examples - each example is for the function f(x, y) = x + y + 2
-(constraint (= (f1 1 2) 5))
-(constraint (= (f1 5 6) 13))
-(constraint (= (f1 3 7) 12))
+; Declare variables, for use in constraints
+(declare-var x Int)
+(declare-var y Int)
 
-; f2 examples - each example is for the function f(x, y) = x + y - 2
-;(constraint (= (f2 1 2) 1))
-;(constraint (= (f2 5 6) 9))
-;(constraint (= (f2 3 7) 8))
 
-; f2 examples - each example is for the function f(x, y) = 2 * x + 2 * y + 4
-;(constraint (= (f3 1 2) 10))
-;(constraint (= (f3 5 6) 26))
-;(constraint (= (f3 3 7) 24))
+; Constraints
+; We can set a constraint to get f(x, y) = 2x + y + 3 directly
+(constraint (= (f_with_constraint x y) (+ (+ (* 2 x) y) 3)))
+; Function won't always be known, though
+
+; We can also use input/output examples as constraints
+; f2 examples - each example is for the function f(x, y) = 2x + y + 3
+(constraint (= (f_with_example 1 2) 7)) ; 2 * 1 + 2 + 3 = 7
+(constraint (= (f_with_example 5 6) 19)) ; 2 * 5 + 6 + 3 = 19
+(constraint (= (f_with_example 3 7) 16)) ; 2 * 3 + 7 + 3 = 16
+
+; You can even use programming-by-examples logic to limit constraints to the form f(c) = d, where c, d are constants
+; (set-logic PBE_*)
+; Replace * with the logic you're using (ex. PBE_SLIA)
 
 
 (check-synth)  ; Check if the synthesis problem has a solution
-; This should return something along the lines of (define-fun arith-examp ((x Int) (y Int)) Int (+ 1 (+ 1 (+ x y))))
-; Astute audience members will note that this is equivalent to arith-examp(x, y) = x + y + 2, but due to the way the grammar is defined constants can only be 0 or 1, so it has to do some extra addition
-; TODO are these comments really necessary?
-
-; TODO notes (delete this when done)
-; f(x, y) = x + y + 2 – use this to generate i/o examples
-; In the end, use those examples to synthesize this function.
-; Figure out: How do you feed examples to solver?
-
-; TODO Github gist? Ask Angus during practics
+; This should return something along the lines of (define-fun f ((x Int) (y Int)) Int (+ 1 (+ 1 (+ 1 (+ (+ x x) y)))))
+; This is equivalent to f(x, y) = 2x + y + 3, but due to the grammar used constants can only be 0 or 1 and there's no multiplication, so it has to do some extra addition
