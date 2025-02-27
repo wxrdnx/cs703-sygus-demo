@@ -1,14 +1,12 @@
 (set-logic LIA)
 
 (synth-fun f ((x Int) (y Int)) Int
-  ((I Int) )
+  ((I Int))
   ((I Int (0 1 x y
                (+ I I)
                (- I I)
                ))
    ))
-(declare-var x Int)
-(declare-var y Int)
 
 (check-synth)
 
