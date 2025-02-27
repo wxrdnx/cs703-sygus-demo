@@ -1,15 +1,25 @@
 (set-logic LIA) ; Input logic - Linear Integer Arithmetic in this case
+; TODO figure out how to get this working with PBE_ (programming-by-examples)
 
-(synth-fun arith-examp ((x Int)(y Int)) Int ; declare function arith-examp
-    ((I Int))
-    ((I Int (0 1 x y (+ I I) (- I I)))) ; Grammar
+(synth-fun arith-examp ((x Int)(y Int)) Int ; declare function arith-examp, signature is arith-examp(x, y)
+    ((I Int)) ; Declare nonterminal
+    ((I Int (0 1 x y (+ I I) (- I I)))) ; Grammar for nonterminal - equivalent to I ::= 0 | 1 | x | y | I + I | I - I
 )
 
-(declare-var x Int)
-(declare-var y Int)
+; (declare-var x Int)
+; (declare-var y Int)
 
-(constraint (= (arith-examp x y) (+ (+ (* 2 x) (* 2 y)) 2))) ; constrain it to the form f(x, y) = 2*x + 2*y + 2
+; (constraint (= (arith-examp x y) (+ (+ x y) 2))) ; constrain it to the form f(x, y) = x + y + 2
 ; TODO figure out how to do this with arbitrary constants a, b, c
+
+; Examples/constraints
+; Each example is for the function f(x, y) = x + y + 2
+(constraint (= (arith-examp 1 2) 5))
+(constraint (= (arith-examp 5 5) 12))
+(constraint (= (arith-examp 3 6) 11))
+
+; Fun example of f(x, y) = x + y - 2. Uncomment it and break the solver!
+; (constraint (= (arith-examp 1 2) 1))
 
 (check-synth)  ; Check if the synthesis problem has a solution
 
@@ -17,3 +27,5 @@
 ; f(x, y) = x + y + 2 – use this to generate i/o examples
 ; In the end, use those examples to synthesize this function.
 ; Figure out: How do you feed examples to solver?
+
+; TODO Github gist? Ask Angus during practics
