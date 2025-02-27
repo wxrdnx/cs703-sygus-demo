@@ -65,13 +65,6 @@ if __name__ == "__main__":
     # Declare the functions and provide the grammar constraints
     f = slv.synthFun("f", [x, y], integer, g)
 
-    # (declare-var x Int)
-    varX = slv.declareSygusVar("x", integer)
-    # (declare-var y Int)
-    varY = slv.declareSygusVar("y", integer)
-
-    f_x_y = tm.mkTerm(Kind.APPLY_UF, f, varX, varY)
-
     # (check-synth)
     if (slv.checkSynth().hasSolution()):
         print_synth_solutions([f], slv.getSynthSolutions([f]))
