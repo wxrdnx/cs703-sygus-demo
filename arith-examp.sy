@@ -1,27 +1,44 @@
 (set-logic LIA) ; Input logic - Linear Integer Arithmetic in this case
 ; TODO figure out how to get this working with PBE_ (programming-by-examples)
 
-(synth-fun arith-examp ((x Int)(y Int)) Int ; declare function arith-examp, signature is arith-examp(x, y)
+(synth-fun f1 ((x Int) (y Int)) Int ; declare function f1, signature is f2(x, y)
     ((I Int)) ; Declare nonterminal
     ((I Int (0 1 x y (+ I I) (- I I)))) ; Grammar for nonterminal - equivalent to I ::= 0 | 1 | x | y | I + I | I - I
 )
 
-; (declare-var x Int)
-; (declare-var y Int)
+; TODO remove other demo functions that don't work for some ineffable reason
+;(synth-fun f2 ((x Int) (y Int)) Int) ; function f2 with same grammar and signature as f1
+;    ((I Int))
+;    ((I Int (0 1 x y (+ I I) (- I I))))
+;)
 
-; (constraint (= (arith-examp x y) (+ (+ x y) 2))) ; constrain it to the form f(x, y) = x + y + 2
-; TODO figure out how to do this with arbitrary constants a, b, c
+;(synth-fun f3 ((x Int) (y Int)) Int ; f3, same as f2 and f1
+;    ((I Int))
+;    ((I Int (0 1 x y (+ I I) (- I I))))
+;)
+
 
 ; Examples/constraints
-; Each example is for the function f(x, y) = x + y + 2
-(constraint (= (arith-examp 1 2) 5))
-(constraint (= (arith-examp 5 5) 12))
-(constraint (= (arith-examp 3 6) 11))
+; f1 examples - each example is for the function f(x, y) = x + y + 2
+(constraint (= (f1 1 2) 5))
+(constraint (= (f1 5 6) 13))
+(constraint (= (f1 3 7) 12))
 
-; Fun example of f(x, y) = x + y - 2. Uncomment it and break the solver!
-; (constraint (= (arith-examp 1 2) 1))
+; f2 examples - each example is for the function f(x, y) = x + y - 2
+;(constraint (= (f2 1 2) 1))
+;(constraint (= (f2 5 6) 9))
+;(constraint (= (f2 3 7) 8))
+
+; f2 examples - each example is for the function f(x, y) = 2 * x + 2 * y + 4
+;(constraint (= (f3 1 2) 10))
+;(constraint (= (f3 5 6) 26))
+;(constraint (= (f3 3 7) 24))
+
 
 (check-synth)  ; Check if the synthesis problem has a solution
+; This should return something along the lines of (define-fun arith-examp ((x Int) (y Int)) Int (+ 1 (+ 1 (+ x y))))
+; Astute audience members will note that this is equivalent to arith-examp(x, y) = x + y + 2, but due to the way the grammar is defined constants can only be 0 or 1, so it has to do some extra addition
+; TODO are these comments really necessary?
 
 ; TODO notes (delete this when done)
 ; f(x, y) = x + y + 2 – use this to generate i/o examples
