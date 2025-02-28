@@ -1,4 +1,8 @@
 (set-logic LIA)
+ 
+; Grammar constraints
+; 0 | 1 | x | y | I + I | I - I | ite(B, I, I)
+; B & B | ~ B | I <= I
 (synth-fun max ((x Int) (y Int)) Int
   ((I Int) (B Bool))
   ((I Int (0 1 x y
@@ -8,9 +12,14 @@
    (B Bool ((and B B)
             (not B)
             (<= I I)))))
+
+; Declare x and y
 (declare-var x Int)
 (declare-var y Int)
+
+; The max(x, y) should be greater or equal to x
 (constraint (>= (max x y) x))
+; The max(x, y) should be greater or equal to y
 (constraint (>= (max x y) y))
 
 (check-synth)

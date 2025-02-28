@@ -1,5 +1,7 @@
 (set-logic LIA)
 
+; Grammar constraint
+; 0 | 1 | x | y | I + I | I - I
 (synth-fun f ((x Int) (y Int)) Int
   ((I Int))
   ((I Int (0 1 x y
